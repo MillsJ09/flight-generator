@@ -55,4 +55,27 @@
   "A35K": { "name": "Airbus A350-1000", "range_nmi": 8700, "speed_kts": 460 },
   "A388": { "name": "Airbus A380-800", "range_nmi": 8000, "speed_kts": 460 },
   "CRJ1": { "name": "Bombardier CRJ100", "range_nmi": 900, "speed_kts": 410 },
-  "CRJ2": { "name": "Bombardier CRJ200", "range_nmi": 100
+  "CRJ2": { "name": "Bombardier CRJ200", "range_nmi": 1000, "speed_kts": 410 },
+  "CRJ7": { "name": "Bombardier CRJ700", "range_nmi": 1700, "speed_kts": 420 },
+  "CRJ9": { "name": "Bombardier CRJ900", "range_nmi": 1800, "speed_kts": 420 },
+  "CRJX": { "name": "Bombardier CRJ1000", "range_nmi": 1650, "speed_kts": 420 },
+  "BCS1": { "name": "Bombardier CS100", "range_nmi": 3600, "speed_kts": 430 },
+  "BCS3": { "name": "Bombardier CS300", "range_nmi": 3400, "speed_kts": 430 },
+  "AT43": { "name": "ATR 42-300", "range_nmi": 800, "speed_kts": 250 },
+  "AT45": { "name": "ATR 42-500", "range_nmi": 800, "speed_kts": 250 },
+  "AT72": { "name": "ATR 72-200", "range_nmi": 825, "speed_kts": 250 },
+  "AT75": { "name": "ATR 72-500", "range_nmi": 900, "speed_kts": 250 },
+  "AT76": { "name": "ATR 72-600", "range_nmi": 920, "speed_kts": 250 },
+  "E135": { "name": "Embraer ERJ 135", "range_nmi": 1200, "speed_kts": 420 },
+  "E140": { "name": "Embraer ERJ 140", "range_nmi": 1200, "speed_kts": 420 },
+  "E145": { "name": "Embraer ERJ 145", "range_nmi": 1350, "speed_kts": 420 },
+  "E170": { "name": "Embraer E170", "range_nmi": 2400, "speed_kts": 430 },
+  "E175": { "name": "Embraer E175", "range_nmi": 2500, "speed_kts": 430 },
+  "E190": { "name": "Embraer E190", "range_nmi": 2600, "speed_kts": 430 },
+  "E195": { "name": "Embraer E195", "range_nmi": 2500, "speed_kts": 430 },
+  "E75L": { "name": "Embraer E175-E2", "range_nmi": 2600, "speed_kts": 430 },
+  "E90L": { "name": "Embraer E190-E2", "range_nmi": 2850, "speed_kts": 430 },
+  "E95L": { "name": "Embraer E195-E2", "range_nmi": 2600, "speed_kts": 430 },
+  "DHC6": { "name": "de Havilland DHC-6 Twin Otter", "range_nmi": 775, "speed_kts": 160 }
+}
+
