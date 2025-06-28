@@ -8,12 +8,6 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Select2 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <!-- jQuery + Select2 JS -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
@@ -109,33 +103,40 @@
 <div id="results"></div>
 
 <script>
-let airports = [];
+let airports = [
+  { "icao": "EGJB", "name": "Guernsey", "lat": 49.4343, "lon": -2.5895 },
+  { "icao": "EGKK", "name": "London Gatwick", "lat": 51.1481, "lon": -0.1903 },
+  { "icao": "EGLL", "name": "London Heathrow", "lat": 51.4700, "lon": -0.4543 },
+  { "icao": "LFPG", "name": "Paris Charles de Gaulle", "lat": 49.0097, "lon": 2.5479 },
+  { "icao": "EDDF", "name": "Frankfurt", "lat": 50.0379, "lon": 8.5622 },
+  { "icao": "EGPH", "name": "Edinburgh", "lat": 55.9500, "lon": -3.3725 },
+  { "icao": "EIDW", "name": "Dublin", "lat": 53.4213, "lon": -6.2701 },
+  { "icao": "LEMD", "name": "Madrid Barajas", "lat": 40.4719, "lon": -3.5626 },
+  { "icao": "EGMC", "name": "Southampton", "lat": 50.9508, "lon": -1.3561 },
+  { "icao": "EGSS", "name": "London Stansted", "lat": 51.8850, "lon": 0.2350 }
+];
+
 let aircraftData = {};
 
-async function loadData() {
-  const airportsURL = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/airports.json';
-  const aircraftURL = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/aircraft.json';
+async function loadAircraftData() {
+  try {
+    const response = await fetch('aircraft.json');
+    aircraftData = await response.json();
 
-  const [airportsRes, aircraftRes] = await Promise.all([
-    fetch(airportsURL),
-    fetch(aircraftURL)
-  ]);
-
-  airports = await airportsRes.json();
-  aircraftData = await aircraftRes.json();
-
-  const aircraftSelect = document.getElementById('aircraft');
-  Object.keys(aircraftData).forEach(code => {
-    const option = document.createElement('option');
-    option.value = code;
-    option.textContent = code;
-    aircraftSelect.appendChild(option);
-  });
-
-  $('#aircraft').select2({ placeholder: "Select Aircraft", width: '100%' });
+    const aircraftSelect = document.getElementById('aircraft');
+    Object.keys(aircraftData).forEach(code => {
+      const option = document.createElement('option');
+      option.value = code;
+      option.textContent = `${code} (${aircraftData[code].range} NM)`;
+      aircraftSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Failed to load aircraft data:', error);
+    alert('Could not load aircraft data. Please check aircraft.json.');
+  }
 }
 
-loadData();
+loadAircraftData();
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const toRad = (deg) => (deg * Math.PI) / 180;
