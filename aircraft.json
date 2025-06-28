@@ -32,7 +32,6 @@
   "Boeing 787-8":              { "range_nmi": 7600, "speed_kts": 488 },
   "Boeing 787-9":              { "range_nmi": 7530, "speed_kts": 488 },
   "Boeing 787-10":             { "range_nmi": 6300, "speed_kts": 488 },
-
   "Airbus A300B4":             { "range_nmi": 4400, "speed_kts": 470 },
   "Airbus A310-200":           { "range_nmi": 5230, "speed_kts": 470 },
   "Airbus A310-300":           { "range_nmi": 5770, "speed_kts": 470 },
@@ -55,7 +54,6 @@
   "Airbus A350-900":           { "range_nmi": 8100, "speed_kts": 488 },
   "Airbus A350-1000":          { "range_nmi": 8700, "speed_kts": 488 },
   "Airbus A380-800":           { "range_nmi": 8000, "speed_kts": 490 },
-
   "Bombardier CRJ100":         { "range_nmi": 900,  "speed_kts": 440 },
   "Bombardier CRJ200":         { "range_nmi": 1000, "speed_kts": 440 },
   "Bombardier CRJ700":         { "range_nmi": 1700, "speed_kts": 440 },
@@ -63,13 +61,11 @@
   "Bombardier CRJ1000":        { "range_nmi": 1650, "speed_kts": 440 },
   "Bombardier CS100":          { "range_nmi": 3600, "speed_kts": 450 },
   "Bombardier CS300":          { "range_nmi": 3400, "speed_kts": 450 },
-
   "ATR 42-300":                { "range_nmi": 800,  "speed_kts": 260 },
   "ATR 42-500":                { "range_nmi": 800,  "speed_kts": 260 },
   "ATR 72-200":                { "range_nmi": 825,  "speed_kts": 260 },
   "ATR 72-500":                { "range_nmi": 900,  "speed_kts": 260 },
   "ATR 72-600":                { "range_nmi": 920,  "speed_kts": 260 },
-
   "Embraer ERJ 135":           { "range_nmi": 1200, "speed_kts": 450 },
   "Embraer ERJ 140":           { "range_nmi": 1200, "speed_kts": 450 },
   "Embraer ERJ 145":           { "range_nmi": 1350, "speed_kts": 450 },
