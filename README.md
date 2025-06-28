@@ -1,6 +1,6 @@
 # Flight Generator
 
-A simple web-based flight route generator that allows users to input a starting airport ICAO code and select an aircraft type. It then displays up to 50 possible destination airports suitable for the aircraft's range from the departure airport, along with estimated distances and flight durations.
+A simple web-based flight route generator that allows users to input a starting airport ICAO code and select an aircraft type. It then displays up to 10 possible destination airports for each generation suitable for the aircraft's range from the departure airport, along with estimated distances and flight durations.
 
 ## Features
 
