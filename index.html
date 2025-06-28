@@ -1,184 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Random Flight Generator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Random Flight Generator</title>
 
-<!-- Museo Sans substitute via Google Fonts (Montserrat as fallback) -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
 
-<style>
-  :root {
-    --color-bg-light: #f9fafb;
-    --color-bg-dark: #121212;
-    --color-text-light: #333;
-    --color-text-dark: #ddd;
-    --color-primary: #3182ce;
-    --color-primary-dark: #90cdf4;
-    --color-bg-form-light: #fff;
-    --color-bg-form-dark: #1f1f1f;
-    --color-bg-table-light: #fff;
-    --color-bg-table-dark: #252525;
-    --color-row-hover-light: #ebf8ff;
-    --color-row-hover-dark: #2a3a4d;
-  }
+  <!-- Select2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- jQuery + Select2 JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-  body {
-    font-family: 'Montserrat', 'Museo Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 700px;
-    margin: 30px auto 50px;
-    padding: 0 20px;
-    background: var(--color-bg-light);
-    color: var(--color-text-light);
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-  body.dark {
-    background: var(--color-bg-dark);
-    color: var(--color-text-dark);
-  }
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 0 20px;
+      background: #f9fafb;
+      color: #333;
+    }
 
-  h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: inherit;
-  }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
 
-  form {
-    background: var(--color-bg-form-light);
-    padding: 25px 30px;
-    border-radius: 8px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    transition: background 0.3s ease;
-  }
-  body.dark form {
-    background: var(--color-bg-form-dark);
-    box-shadow: 0 3px 15px rgba(0,0,0,0.8);
-  }
+    form {
+      background: #fff;
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
 
-  label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    margin-top: 20px;
-    color: inherit;
-  }
-  input[type="text"], select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1.8px solid #cbd5e0;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
-    background: #fff;
-    color: #222;
-  }
-  input[type="text"]:focus, select:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 6px var(--color-primary-dark);
-  }
-  body.dark input[type="text"],
-  body.dark select {
-    background: #222;
-    color: #eee;
-    border-color: #555;
-  }
-  body.dark input[type="text"]:focus,
-  body.dark select:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 6px var(--color-primary-dark);
-  }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
 
-  button {
-    margin-top: 30px;
-    width: 100%;
-    background: var(--color-primary);
-    color: white;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 12px 0;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: #2b6cb0;
-  }
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1.8px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
 
-  #results {
-    margin-top: 30px;
-  }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      background: #3182ce;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
 
-  table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-    background: var(--color-bg-table-light);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-  body.dark table {
-    background: var(--color-bg-table-dark);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-  }
+    button:hover {
+      background: #2b6cb0;
+    }
 
-  th, td {
-    padding: 15px 20px;
-    text-align: center;
-    font-weight: 500;
-    color: inherit;
-  }
-  thead tr {
-    background: var(--color-primary);
-    color: white;
-    font-weight: 700;
-  }
+    #results {
+      margin-top: 30px;
+    }
 
-  tbody tr {
-    background: #f7fafc;
-    transition: background 0.25s ease;
-  }
-  tbody tr:hover {
-    background: var(--color-row-hover-light);
-  }
-  body.dark tbody tr {
-    background: #1e1e1e;
-  }
-  body.dark tbody tr:hover {
-    background: var(--color-row-hover-dark);
-  }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
 
-  /* Dark mode toggle button top-right */
-  #toggleDark {
-    position: fixed;
-    top: 18px;
-    right: 20px;
-    background: var(--color-primary);
-    border: none;
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    font-size: 20px;
-    line-height: 38px;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    transition: background 0.3s ease;
-    z-index: 9999;
-    text-align: center;
-  }
-  #toggleDark:hover {
-    background: #2b6cb0;
-  }
-</style>
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    thead {
+      background: #3182ce;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-
-<button id="toggleDark" aria-label="Toggle light/dark mode">🌙</button>
 
 <h1>Random Flight Generator</h1>
 
@@ -189,10 +101,6 @@
   <label for="aircraft">Select Aircraft:</label>
   <select id="aircraft" required>
     <option value="">-- Select Aircraft --</option>
-    <option value="A320">Airbus A320</option>
-    <option value="B737">Boeing 737</option>
-    <option value="C172">Cessna 172</option>
-    <option value="SR22">Cirrus SR22</option>
   </select>
 
   <button type="submit">Generate Flights</button>
@@ -201,49 +109,42 @@
 <div id="results"></div>
 
 <script>
-// Airport data: ICAO, name, lat, lon (sample subset)
-const airports = [
-  {icao: "EGJB", name: "Guernsey", lat: 49.4343, lon: -2.5895},
-  {icao: "EGKK", name: "London Gatwick", lat: 51.1481, lon: -0.1903},
-  {icao: "EGLL", name: "London Heathrow", lat: 51.4700, lon: -0.4543},
-  {icao: "LFPG", name: "Paris Charles de Gaulle", lat: 49.0097, lon: 2.5479},
-  {icao: "EDDF", name: "Frankfurt", lat: 50.0379, lon: 8.5622},
-  {icao: "EGPH", name: "Edinburgh", lat: 55.9500, lon: -3.3725},
-  {icao: "EIDW", name: "Dublin", lat: 53.4213, lon: -6.2701},
-  {icao: "LEMD", name: "Madrid Barajas", lat: 40.4719, lon: -3.5626},
-  {icao: "EGMC", name: "Southampton", lat: 50.9508, lon: -1.3561},
-  {icao: "EGSS", name: "London Stansted", lat: 51.8850, lon: 0.2350},
-  {icao: "EGGW", name: "London Luton", lat: 51.8747, lon: -0.3683},
-  {icao: "EGNT", name: "Newcastle", lat: 55.0375, lon: -1.6919},
-  {icao: "EGBB", name: "Birmingham", lat: 52.4525, lon: -1.7486},
-  {icao: "LEBL", name: "Barcelona", lat: 41.2971, lon: 2.0785},
-  {icao: "EDDM", name: "Munich", lat: 48.3538, lon: 11.7861},
-  {icao: "EKCH", name: "Copenhagen", lat: 55.6179, lon: 12.6561},
-  {icao: "EHAM", name: "Amsterdam", lat: 52.3086, lon: 4.7639},
-  {icao: "LOWW", name: "Vienna", lat: 48.1103, lon: 16.5697},
-  {icao: "EGLC", name: "London City", lat: 51.5053, lon: 0.0553},
-  {icao: "EGWU", name: "RAF Northolt", lat: 51.5567, lon: -0.4170},
-  {icao: "EGGP", name: "Liverpool", lat: 53.3331, lon: -2.8497},
-];
+let airports = [];
+let aircraftData = {};
 
-// Aircraft data: max range (NM) and cruise speed (knots)
-const aircraftData = {
-  "A320": {range: 3300, speed: 450},
-  "B737": {range: 3200, speed: 460},
-  "C172": {range: 640, speed: 122},
-  "SR22": {range: 1050, speed: 183}
-};
+async function loadData() {
+  const airportsURL = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/airports.json';
+  const aircraftURL = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/aircraft.json';
 
-// Calculate great circle distance between two coords (Haversine formula)
+  const [airportsRes, aircraftRes] = await Promise.all([
+    fetch(airportsURL),
+    fetch(aircraftURL)
+  ]);
+
+  airports = await airportsRes.json();
+  aircraftData = await aircraftRes.json();
+
+  const aircraftSelect = document.getElementById('aircraft');
+  Object.keys(aircraftData).forEach(code => {
+    const option = document.createElement('option');
+    option.value = code;
+    option.textContent = code;
+    aircraftSelect.appendChild(option);
+  });
+
+  $('#aircraft').select2({ placeholder: "Select Aircraft", width: '100%' });
+}
+
+loadData();
+
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const toRad = (deg) => (deg * Math.PI) / 180;
-  const R = 3440; // Nautical miles
+  const R = 3440;
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
@@ -254,6 +155,16 @@ function formatDuration(hours) {
   return `${h}h ${m}m`;
 }
 
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
+
 document.getElementById('flightForm').addEventListener('submit', (e) => {
   e.preventDefault();
 
@@ -262,7 +173,7 @@ document.getElementById('flightForm').addEventListener('submit', (e) => {
 
   const depAirport = airports.find(a => a.icao === depICAO);
   if (!depAirport) {
-    alert('Departure airport not found. Please enter a valid ICAO from the list.');
+    alert('Departure airport not found. Please enter a valid ICAO.');
     return;
   }
   if (!aircraftData[aircraft]) {
@@ -273,16 +184,13 @@ document.getElementById('flightForm').addEventListener('submit', (e) => {
   const maxRange = aircraftData[aircraft].range;
   const speed = aircraftData[aircraft].speed;
 
-  // Find all suitable destinations (not the departure, within range)
-  let destinations = airports.filter(a => 
+  let destinations = airports.filter(a =>
     a.icao !== depICAO &&
     calculateDistance(depAirport.lat, depAirport.lon, a.lat, a.lon) <= maxRange
   );
 
-  // Randomize and limit to 50 max
-  destinations = shuffle(destinations).slice(0, 50);
+  destinations = shuffle(destinations).slice(0, 10);
 
-  // Generate flight data
   const flights = destinations.map(dest => {
     const dist = calculateDistance(depAirport.lat, depAirport.lon, dest.lat, dest.lon);
     const durationHours = dist / speed;
@@ -330,35 +238,6 @@ function displayResults(flights) {
   html += '</tbody></table>';
   resultsDiv.innerHTML = html;
 }
-
-// Shuffle helper (Fisher-Yates)
-function shuffle(array) {
-  let currentIndex = array.length, randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-  }
-  return array;
-}
-
-// Dark/light mode toggle with sun/moon icons
-const toggleBtn = document.getElementById('toggleDark');
-
-function updateToggleIcon() {
-  if (document.body.classList.contains('dark')) {
-    toggleBtn.textContent = '🌞'; // sun for dark mode (means click for light)
-  } else {
-    toggleBtn.textContent = '🌙'; // moon for light mode (means click for dark)
-  }
-}
-
-updateToggleIcon();
-
-toggleBtn.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  updateToggleIcon();
-});
 </script>
 
 </body>
