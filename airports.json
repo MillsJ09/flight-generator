@@ -1,0 +1,12 @@
+[
+  { "icao": "EGJB", "name": "Guernsey", "lat": 49.4343, "lon": -2.5895 },
+  { "icao": "EGKK", "name": "London Gatwick", "lat": 51.1481, "lon": -0.1903 },
+  { "icao": "EGLL", "name": "London Heathrow", "lat": 51.4700, "lon": -0.4543 },
+  { "icao": "LFPG", "name": "Paris Charles de Gaulle", "lat": 49.0097, "lon": 2.5479 },
+  { "icao": "EDDF", "name": "Frankfurt", "lat": 50.0379, "lon": 8.5622 },
+  { "icao": "EGPH", "name": "Edinburgh", "lat": 55.9500, "lon": -3.3725 },
+  { "icao": "EIDW", "name": "Dublin", "lat": 53.4213, "lon": -6.2701 },
+  { "icao": "LEMD", "name": "Madrid Barajas", "lat": 40.4719, "lon": -3.5626 },
+  { "icao": "EGMC", "name": "Southampton", "lat": 50.9508, "lon": -1.3561 },
+  { "icao": "EGSS", "name": "London Stansted", "lat": 51.8850, "lon": 0.2350 }
+]
