@@ -9,13 +9,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
 
   <style>
+    :root {
+      --color-bg-light: #f9fafb;
+      --color-bg-dark: #121212;
+      --color-text-light: #333;
+      --color-text-dark: #ddd;
+      --color-primary: #3182ce;
+      --color-primary-dark: #90cdf4;
+      --color-bg-form-light: #fff;
+      --color-bg-form-dark: #1f1f1f;
+      --color-bg-table-light: #fff;
+      --color-bg-table-dark: #252525;
+      --color-row-hover-light: #ebf8ff;
+      --color-row-hover-dark: #2a3a4d;
+    }
+
     body {
       font-family: 'Montserrat', sans-serif;
       max-width: 700px;
       margin: 30px auto;
       padding: 0 20px;
-      background: #f9fafb;
-      color: #333;
+      background: var(--color-bg-light);
+      color: var(--color-text-light);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark {
+      background: var(--color-bg-dark);
+      color: var(--color-text-dark);
     }
 
     h1 {
@@ -24,10 +45,15 @@
     }
 
     form {
-      background: #fff;
+      background: var(--color-bg-form-light);
       padding: 25px 30px;
       border-radius: 8px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    body.dark form {
+      background: var(--color-bg-form-dark);
+      box-shadow: 0 3px 15px rgba(0,0,0,0.8);
     }
 
     label {
@@ -43,12 +69,33 @@
       border: 1.8px solid #cbd5e0;
       border-radius: 6px;
       font-size: 1rem;
+      background: #fff;
+      color: #222;
+    }
+
+    input[type="text"]:focus, select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 6px var(--color-primary-dark);
+    }
+
+    body.dark input[type="text"],
+    body.dark select {
+      background: #222;
+      color: #eee;
+      border-color: #555;
+    }
+
+    body.dark input[type="text"]:focus,
+    body.dark select:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 6px var(--color-primary-dark);
     }
 
     button {
       margin-top: 30px;
       width: 100%;
-      background: #3182ce;
+      background: var(--color-primary);
       color: white;
       font-weight: 600;
       font-size: 1.1rem;
@@ -70,6 +117,12 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      background: var(--color-bg-table-light);
+      transition: background 0.3s ease;
+    }
+
+    body.dark table {
+      background: var(--color-bg-table-dark);
     }
 
     th, td {
@@ -79,12 +132,44 @@
     }
 
     thead {
-      background: #3182ce;
+      background: var(--color-primary);
       color: white;
+    }
+
+    tbody tr:hover {
+      background: var(--color-row-hover-light);
+    }
+
+    body.dark tbody tr:hover {
+      background: var(--color-row-hover-dark);
+    }
+
+    #toggleDark {
+      position: fixed;
+      top: 18px;
+      right: 20px;
+      background: var(--color-primary);
+      border: none;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      font-size: 20px;
+      line-height: 38px;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 9999;
+      text-align: center;
+    }
+
+    #toggleDark:hover {
+      background: #2b6cb0;
     }
   </style>
 </head>
 <body>
+
+<button id="toggleDark" aria-label="Toggle light/dark mode">🌙</button>
 
 <h1>Random Flight Generator</h1>
 
@@ -118,6 +203,11 @@ let airports = [
 
 let aircraftData = {};
 
+document.addEventListener('DOMContentLoaded', () => {
+  loadAircraftData();
+  updateToggleIcon();
+});
+
 async function loadAircraftData() {
   try {
     const response = await fetch('aircraft.json');
@@ -135,8 +225,6 @@ async function loadAircraftData() {
     alert('Could not load aircraft data. Please check aircraft.json.');
   }
 }
-
-loadAircraftData();
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const toRad = (deg) => (deg * Math.PI) / 180;
@@ -161,85 +249,3 @@ function shuffle(array) {
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-  }
-  return array;
-}
-
-document.getElementById('flightForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const depICAO = document.getElementById('depAirport').value.toUpperCase().trim();
-  const aircraft = document.getElementById('aircraft').value;
-
-  const depAirport = airports.find(a => a.icao === depICAO);
-  if (!depAirport) {
-    alert('Departure airport not found. Please enter a valid ICAO.');
-    return;
-  }
-  if (!aircraftData[aircraft]) {
-    alert('Please select a valid aircraft.');
-    return;
-  }
-
-  const maxRange = aircraftData[aircraft].range;
-  const speed = aircraftData[aircraft].speed;
-
-  let destinations = airports.filter(a =>
-    a.icao !== depICAO &&
-    calculateDistance(depAirport.lat, depAirport.lon, a.lat, a.lon) <= maxRange
-  );
-
-  destinations = shuffle(destinations).slice(0, 10);
-
-  const flights = destinations.map(dest => {
-    const dist = calculateDistance(depAirport.lat, depAirport.lon, dest.lat, dest.lon);
-    const durationHours = dist / speed;
-    return {
-      departure: depAirport.icao,
-      arrival: dest.icao,
-      distance: dist.toFixed(0),
-      duration: formatDuration(durationHours),
-      aircraft
-    };
-  });
-
-  displayResults(flights);
-});
-
-function displayResults(flights) {
-  const resultsDiv = document.getElementById('results');
-  if (flights.length === 0) {
-    resultsDiv.innerHTML = '<p>No suitable flights found.</p>';
-    return;
-  }
-
-  let html = `<table>
-    <thead>
-      <tr>
-        <th>Departure ICAO</th>
-        <th>Arrival ICAO</th>
-        <th>Distance (NM)</th>
-        <th>Est. Flight Time</th>
-        <th>Aircraft</th>
-      </tr>
-    </thead>
-    <tbody>`;
-
-  flights.forEach(f => {
-    html += `<tr>
-      <td>${f.departure}</td>
-      <td>${f.arrival}</td>
-      <td>${f.distance}</td>
-      <td>${f.duration}</td>
-      <td>${f.aircraft}</td>
-    </tr>`;
-  });
-
-  html += '</tbody></table>';
-  resultsDiv.innerHTML = html;
-}
-</script>
-
-</body>
-</html>
