@@ -29,8 +29,7 @@ A simple web-based flight route generator that allows users to input a starting 
 
 ## Installation
 
-No installation required. Simply download the `flight-generator.html` file and open it in your browser.
-
+No installation required. Open the URL `https://millsj09.github.io/flight-generator/`
 ## Deployment
 
 For hosting online, you can:
