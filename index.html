@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Random Flight Generator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 15px;
+  }
+  h1 {
+    text-align: center;
+  }
+  label {
+    display: inline-block;
+    margin-top: 10px;
+  }
+  input, select, button {
+    padding: 8px;
+    font-size: 1em;
+    margin-top: 5px;
+    width: 100%;
+    max-width: 300px;
+  }
+  table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: center;
+  }
+  th {
+    background: #eee;
+  }
+  #results {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Random Flight Generator</h1>
+
+<form id="flightForm">
+  <label for="depAirport">Starting Airport (ICAO):</label><br />
+  <input type="text" id="depAirport" placeholder="e.g. EGJB" maxlength="4" required />
+
+  <label for="aircraft">Select Aircraft:</label><br />
+  <select id="aircraft" required>
+    <option value="">-- Select Aircraft --</option>
+    <option value="A320">Airbus A320</option>
+    <option value="B737">Boeing 737</option>
+    <option value="C172">Cessna 172</option>
+    <option value="SR22">Cirrus SR22</option>
+  </select>
+
+  <label for="airline">Airline (optional):</label><br />
+  <input type="text" id="airline" placeholder="e.g. Aurigny" />
+
+  <button type="submit">Generate Flights</button>
+</form>
+
+<div id="results"></div>
+
+<script>
+// Predefined airport list (ICAO, lat, lon) - sample ~100 airports worldwide
+const airports = [
+  {icao: "EGJB", name: "Guernsey", lat: 49.4343, lon: -2.5895},
+  {icao: "EGKK", name: "London Gatwick", lat: 51.1481, lon: -0.1903},
+  {icao: "EGLL", name: "London Heathrow", lat: 51.4700, lon: -0.4543},
+  {icao: "LFPG", name: "Paris Charles de Gaulle", lat: 49.0097, lon: 2.5479},
+  {icao: "EDDF", name: "Frankfurt", lat: 50.0379, lon: 8.5622},
+  {icao: "EGPH", name: "Edinburgh", lat: 55.9500, lon: -3.3725},
+  {icao: "EIDW", name: "Dublin", lat: 53.4213, lon: -6.2701},
+  {icao: "LEMD", name: "Madrid Barajas", lat: 40.4719, lon: -3.5626},
+  {icao: "EGMC", name: "Southampton", lat: 50.9508, lon: -1.3561},
+  {icao: "EGSS", name: "London Stansted", lat: 51.8850, lon: 0.2350},
+  {icao: "EGGW", name: "London Luton", lat: 51.8747, lon: -0.3683},
+  {icao: "EGNT", name: "Newcastle", lat: 55.0375, lon: -1.6919},
+  {icao: "EGBB", name: "Birmingham", lat: 52.4525, lon: -1.7486},
+  {icao: "LEBL", name: "Barcelona", lat: 41.2971, lon: 2.0785},
+  {icao: "EDDM", name: "Munich", lat: 48.3538, lon: 11.7861},
+  {icao: "EKCH", name: "Copenhagen", lat: 55.6179, lon: 12.6561},
+  {icao: "EHAM", name: "Amsterdam", lat: 52.3086, lon: 4.7639},
+  {icao: "LOWW", name: "Vienna", lat: 48.1103, lon: 16.5697},
+  {icao: "EGLC", name: "London City", lat: 51.5053, lon: 0.0553},
+  {icao: "EGWU", name: "RAF Northolt", lat: 51.5567, lon: -0.4170},
+  {icao: "EGGP", name: "Liverpool", lat: 53.3331, lon: -2.8497},
+  {icao: "EGJB", name: "Guernsey", lat: 49.4343, lon: -2.5895},
+  // More airports can be added here
+];
+
+// Aircraft data: typical max range (NM) and cruise speed (knots)
+const aircraftData = {
+  "A320": {range: 3300, speed: 450},
+  "B737": {range: 3200, speed: 460},
+  "C172": {range: 640, speed: 122},
+  "SR22": {range: 1050, speed: 183}
+};
+
+// Calculate distance between two lat/lon points using Haversine formula
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 3440.065; // Nautical miles
+  const toRad = (deg) => deg * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+function generateFlights(depICAO, aircraft, airline) {
+  const depAirport = airports.find(a => a.icao.toUpperCase() === depICAO.toUpperCase());
+  if (!depAirport) {
+    alert("Departure airport not found in database.");
+    return [];
+  }
+
+  const acData = aircraftData[aircraft];
+  if (!acData) {
+    alert("Aircraft data not found.");
+    return [];
+  }
+
+  // Filter airports within range (exclude dep airport itself)
+  let possibleDestinations = airports.filter(a => {
+    if (a.icao === depAirport.icao) return false;
+    const dist = calculateDistance(depAirport.lat, depAirport.lon, a.lat, a.lon);
+    return dist <= acData.range;
+  });
+
+  // Sort by distance (ascending)
+  possibleDestinations.sort((a,b) => {
+    const distA = calculateDistance(depAirport.lat, depAirport.lon, a.lat, a.lon);
+    const distB = calculateDistance(depAirport.lat, depAirport.lon, b.lat, b.lon);
+    return distA - distB;
+  });
+
+  // Limit to max 50 destinations
+  if (possibleDestinations.length > 50) {
+    possibleDestinations = possibleDestinations.slice(0, 50);
+  }
+
+  // Prepare results
+  const results = possibleDestinations.map(dest => {
+    const dist = calculateDistance(depAirport.lat, depAirport.lon, dest.lat, dest.lon);
+    const timeHours = dist / acData.speed;
+    const timeMins = Math.round(timeHours * 60);
+
+    return {
+      depICAO: depAirport.icao,
+      arrICAO: dest.icao,
+      distance: dist.toFixed(0),
+      duration: `${Math.floor(timeMins / 60)}h ${timeMins % 60}m`,
+      aircraft: aircraft,
+      airline: airline || "-"
+    };
+  });
+
+  return results;
+}
+
+function displayResults(flights) {
+  const resultsDiv = document.getElementById("results");
+  if (flights.length === 0) {
+    resultsDiv.innerHTML = "<p>No destinations found within range.</p>";
+    return;
+  }
+
+  let html = `<table>
+    <thead>
+      <tr>
+        <th>Departure</th>
+        <th>Arrival</th>
+        <th>Distance (NM)</th>
+        <th>Est. Duration</th>
+        <th>Aircraft</th>
+        <th>Airline</th>
+      </tr>
+    </thead><tbody>`;
+
+  flights.forEach(f => {
+    html += `<tr>
+      <td>${f.depICAO}</td>
+      <td>${f.arrICAO}</td>
+      <td>${f.distance}</td>
+      <td>${f.duration}</td>
+      <td>${f.aircraft}</td>
+      <td>${f.airline}</td>
+    </tr>`;
+  });
+
+  html += "</tbody></table>";
+
+  resultsDiv.innerHTML = html;
+}
+
+document.getElementById("flightForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const dep = document.getElementById("depAirport").value.trim().toUpperCase();
+  const ac = document.getElementById("aircraft").value;
+  const airline = document.getElementById("airline").value.trim();
+
+  if (!dep || !ac) {
+    alert("Please enter starting airport ICAO and select an aircraft.");
+    return;
+  }
+
+  const flights = generateFlights(dep, ac, airline);
+  displayResults(flights);
+});
+</script>
+
+</body>
+</html>
