@@ -1,58 +1,192 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Random Flight Generator</title>
+
+<!-- Museo Sans substitute via Google Fonts (Montserrat as fallback) -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 0 15px;
+  :root {
+    --color-bg-light: #f9fafb;
+    --color-bg-dark: #121212;
+    --color-text-light: #333;
+    --color-text-dark: #ddd;
+    --color-primary: #3182ce;
+    --color-primary-dark: #90cdf4;
+    --color-bg-form-light: #fff;
+    --color-bg-form-dark: #1f1f1f;
+    --color-bg-table-light: #fff;
+    --color-bg-table-dark: #252525;
+    --color-row-hover-light: #ebf8ff;
+    --color-row-hover-dark: #2a3a4d;
   }
+
+  body {
+    font-family: 'Montserrat', 'Museo Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 700px;
+    margin: 30px auto 50px;
+    padding: 0 20px;
+    background: var(--color-bg-light);
+    color: var(--color-text-light);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  body.dark {
+    background: var(--color-bg-dark);
+    color: var(--color-text-dark);
+  }
+
   h1 {
     text-align: center;
+    margin-bottom: 30px;
+    color: inherit;
   }
+
+  form {
+    background: var(--color-bg-form-light);
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: background 0.3s ease;
+  }
+  body.dark form {
+    background: var(--color-bg-form-dark);
+    box-shadow: 0 3px 15px rgba(0,0,0,0.8);
+  }
+
   label {
-    display: inline-block;
-    margin-top: 10px;
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    color: inherit;
   }
-  input, select, button {
-    padding: 8px;
-    font-size: 1em;
-    margin-top: 5px;
+  input[type="text"], select {
     width: 100%;
-    max-width: 300px;
+    padding: 12px 15px;
+    border: 1.8px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+    background: #fff;
+    color: #222;
   }
+  input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 6px var(--color-primary-dark);
+  }
+  body.dark input[type="text"],
+  body.dark select {
+    background: #222;
+    color: #eee;
+    border-color: #555;
+  }
+  body.dark input[type="text"]:focus,
+  body.dark select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 6px var(--color-primary-dark);
+  }
+
+  button {
+    margin-top: 30px;
+    width: 100%;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #2b6cb0;
+  }
+
+  #results {
+    margin-top: 30px;
+  }
+
   table {
     width: 100%;
-    margin-top: 20px;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background: var(--color-bg-table-light);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: background 0.3s ease, color 0.3s ease;
   }
+  body.dark table {
+    background: var(--color-bg-table-dark);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+  }
+
   th, td {
-    border: 1px solid #444;
-    padding: 8px;
+    padding: 15px 20px;
+    text-align: center;
+    font-weight: 500;
+    color: inherit;
+  }
+  thead tr {
+    background: var(--color-primary);
+    color: white;
+    font-weight: 700;
+  }
+
+  tbody tr {
+    background: #f7fafc;
+    transition: background 0.25s ease;
+  }
+  tbody tr:hover {
+    background: var(--color-row-hover-light);
+  }
+  body.dark tbody tr {
+    background: #1e1e1e;
+  }
+  body.dark tbody tr:hover {
+    background: var(--color-row-hover-dark);
+  }
+
+  /* Dark mode toggle button top-right */
+  #toggleDark {
+    position: fixed;
+    top: 18px;
+    right: 20px;
+    background: var(--color-primary);
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+    line-height: 38px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: background 0.3s ease;
+    z-index: 9999;
     text-align: center;
   }
-  th {
-    background: #eee;
-  }
-  #results {
-    margin-top: 20px;
+  #toggleDark:hover {
+    background: #2b6cb0;
   }
 </style>
 </head>
 <body>
 
+<button id="toggleDark" aria-label="Toggle light/dark mode">🌙</button>
+
 <h1>Random Flight Generator</h1>
 
-<form id="flightForm">
-  <label for="depAirport">Starting Airport (ICAO):</label><br />
+<form id="flightForm" autocomplete="off">
+  <label for="depAirport">Starting Airport (ICAO):</label>
   <input type="text" id="depAirport" placeholder="e.g. EGJB" maxlength="4" required />
 
-  <label for="aircraft">Select Aircraft:</label><br />
+  <label for="aircraft">Select Aircraft:</label>
   <select id="aircraft" required>
     <option value="">-- Select Aircraft --</option>
     <option value="A320">Airbus A320</option>
@@ -61,16 +195,13 @@
     <option value="SR22">Cirrus SR22</option>
   </select>
 
-  <label for="airline">Airline (optional):</label><br />
-  <input type="text" id="airline" placeholder="e.g. Aurigny" />
-
   <button type="submit">Generate Flights</button>
 </form>
 
 <div id="results"></div>
 
 <script>
-// Predefined airport list (ICAO, lat, lon) - sample ~100 airports worldwide
+// Airport data: ICAO, name, lat, lon (sample subset)
 const airports = [
   {icao: "EGJB", name: "Guernsey", lat: 49.4343, lon: -2.5895},
   {icao: "EGKK", name: "London Gatwick", lat: 51.1481, lon: -0.1903},
@@ -93,11 +224,9 @@ const airports = [
   {icao: "EGLC", name: "London City", lat: 51.5053, lon: 0.0553},
   {icao: "EGWU", name: "RAF Northolt", lat: 51.5567, lon: -0.4170},
   {icao: "EGGP", name: "Liverpool", lat: 53.3331, lon: -2.8497},
-  {icao: "EGJB", name: "Guernsey", lat: 49.4343, lon: -2.5895},
-  // More airports can be added here
 ];
 
-// Aircraft data: typical max range (NM) and cruise speed (knots)
+// Aircraft data: max range (NM) and cruise speed (knots)
 const aircraftData = {
   "A320": {range: 3300, speed: 450},
   "B737": {range: 3200, speed: 460},
@@ -105,119 +234,130 @@ const aircraftData = {
   "SR22": {range: 1050, speed: 183}
 };
 
-// Calculate distance between two lat/lon points using Haversine formula
+// Calculate great circle distance between two coords (Haversine formula)
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 3440.065; // Nautical miles
-  const toRad = (deg) => deg * Math.PI / 180;
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const R = 3440; // Nautical miles
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
-function generateFlights(depICAO, aircraft, airline) {
-  const depAirport = airports.find(a => a.icao.toUpperCase() === depICAO.toUpperCase());
+function formatDuration(hours) {
+  const h = Math.floor(hours);
+  const m = Math.round((hours - h) * 60);
+  return `${h}h ${m}m`;
+}
+
+document.getElementById('flightForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const depICAO = document.getElementById('depAirport').value.toUpperCase().trim();
+  const aircraft = document.getElementById('aircraft').value;
+
+  const depAirport = airports.find(a => a.icao === depICAO);
   if (!depAirport) {
-    alert("Departure airport not found in database.");
-    return [];
+    alert('Departure airport not found. Please enter a valid ICAO from the list.');
+    return;
+  }
+  if (!aircraftData[aircraft]) {
+    alert('Please select a valid aircraft.');
+    return;
   }
 
-  const acData = aircraftData[aircraft];
-  if (!acData) {
-    alert("Aircraft data not found.");
-    return [];
-  }
+  const maxRange = aircraftData[aircraft].range;
+  const speed = aircraftData[aircraft].speed;
 
-  // Filter airports within range (exclude dep airport itself)
-  let possibleDestinations = airports.filter(a => {
-    if (a.icao === depAirport.icao) return false;
-    const dist = calculateDistance(depAirport.lat, depAirport.lon, a.lat, a.lon);
-    return dist <= acData.range;
-  });
+  // Find all suitable destinations (not the departure, within range)
+  let destinations = airports.filter(a => 
+    a.icao !== depICAO &&
+    calculateDistance(depAirport.lat, depAirport.lon, a.lat, a.lon) <= maxRange
+  );
 
-  // Sort by distance (ascending)
-  possibleDestinations.sort((a,b) => {
-    const distA = calculateDistance(depAirport.lat, depAirport.lon, a.lat, a.lon);
-    const distB = calculateDistance(depAirport.lat, depAirport.lon, b.lat, b.lon);
-    return distA - distB;
-  });
+  // Randomize and limit to 50 max
+  destinations = shuffle(destinations).slice(0, 50);
 
-  // Limit to max 50 destinations
-  if (possibleDestinations.length > 50) {
-    possibleDestinations = possibleDestinations.slice(0, 50);
-  }
-
-  // Prepare results
-  const results = possibleDestinations.map(dest => {
+  // Generate flight data
+  const flights = destinations.map(dest => {
     const dist = calculateDistance(depAirport.lat, depAirport.lon, dest.lat, dest.lon);
-    const timeHours = dist / acData.speed;
-    const timeMins = Math.round(timeHours * 60);
-
+    const durationHours = dist / speed;
     return {
-      depICAO: depAirport.icao,
-      arrICAO: dest.icao,
+      departure: depAirport.icao,
+      arrival: dest.icao,
       distance: dist.toFixed(0),
-      duration: `${Math.floor(timeMins / 60)}h ${timeMins % 60}m`,
-      aircraft: aircraft,
-      airline: airline || "-"
+      duration: formatDuration(durationHours),
+      aircraft
     };
   });
 
-  return results;
-}
+  displayResults(flights);
+});
 
 function displayResults(flights) {
-  const resultsDiv = document.getElementById("results");
+  const resultsDiv = document.getElementById('results');
   if (flights.length === 0) {
-    resultsDiv.innerHTML = "<p>No destinations found within range.</p>";
+    resultsDiv.innerHTML = '<p>No suitable flights found.</p>';
     return;
   }
 
   let html = `<table>
     <thead>
       <tr>
-        <th>Departure</th>
-        <th>Arrival</th>
+        <th>Departure ICAO</th>
+        <th>Arrival ICAO</th>
         <th>Distance (NM)</th>
-        <th>Est. Duration</th>
+        <th>Est. Flight Time</th>
         <th>Aircraft</th>
-        <th>Airline</th>
       </tr>
-    </thead><tbody>`;
+    </thead>
+    <tbody>`;
 
   flights.forEach(f => {
     html += `<tr>
-      <td>${f.depICAO}</td>
-      <td>${f.arrICAO}</td>
+      <td>${f.departure}</td>
+      <td>${f.arrival}</td>
       <td>${f.distance}</td>
       <td>${f.duration}</td>
       <td>${f.aircraft}</td>
-      <td>${f.airline}</td>
     </tr>`;
   });
 
-  html += "</tbody></table>";
-
+  html += '</tbody></table>';
   resultsDiv.innerHTML = html;
 }
 
-document.getElementById("flightForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  const dep = document.getElementById("depAirport").value.trim().toUpperCase();
-  const ac = document.getElementById("aircraft").value;
-  const airline = document.getElementById("airline").value.trim();
-
-  if (!dep || !ac) {
-    alert("Please enter starting airport ICAO and select an aircraft.");
-    return;
+// Shuffle helper (Fisher-Yates)
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
   }
+  return array;
+}
 
-  const flights = generateFlights(dep, ac, airline);
-  displayResults(flights);
+// Dark/light mode toggle with sun/moon icons
+const toggleBtn = document.getElementById('toggleDark');
+
+function updateToggleIcon() {
+  if (document.body.classList.contains('dark')) {
+    toggleBtn.textContent = '🌞'; // sun for dark mode (means click for light)
+  } else {
+    toggleBtn.textContent = '🌙'; // moon for light mode (means click for dark)
+  }
+}
+
+updateToggleIcon();
+
+toggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  updateToggleIcon();
 });
 </script>
 
